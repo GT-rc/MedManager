@@ -1,0 +1,60 @@
+﻿@model MedManager.Models.Medication
+
+@{
+    ViewData["Title"] = "Edit";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Edit</h2>
+
+<h4>Medication</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="ID" />
+            <div class="form-group">
+                <label asp-for="Name" class="control-label"></label>
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Dosage" class="control-label"></label>
+                <input asp-for="Dosage" class="form-control" />
+                <span asp-validation-for="Dosage" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Notes" class="control-label"></label>
+                <input asp-for="Notes" class="form-control" />
+                <span asp-validation-for="Notes" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="TimesXDay" class="control-label"></label>
+                <input asp-for="TimesXDay" class="form-control" />
+                <span asp-validation-for="TimesXDay" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="RefillRate" class="control-label"></label>
+                <input asp-for="RefillRate" class="form-control" />
+                <span asp-validation-for="RefillRate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="UserID" class="control-label"></label>
+                <input asp-for="UserID" class="form-control" />
+                <span asp-validation-for="UserID" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-default" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
