@@ -11,7 +11,9 @@ namespace MedManager.Models
     public class ApplicationUser : IdentityUser
     {
         public string FullName { get; set; }
-        public List<Medication> AllMeds { get; set; } = new List<Medication>();
         public PermissionLevel permissionLevel { get; set; } = PermissionLevel.User;
+
+        private List<Medication> _allMeds = new List<Medication>();
+        public List<Medication> AllMeds { get => _allMeds; set => _allMeds = value; }
     }
 }
