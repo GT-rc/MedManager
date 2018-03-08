@@ -1,0 +1,25 @@
+﻿
+@{
+    ViewData["Title"] = "Remove";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Remove a Medication</h1>
+
+<form method="post">
+
+    @foreach (var item in ViewBag.meds)
+    {
+    <input type="checkbox" name="medIds" id="@item.ID" value="@item.ID" />
+    <label for="@item.ID">@item.Name</label>
+    <br />
+    }
+
+    <input type="submit" value="Remove Selected Medication(s)" />
+</form>
+
+@if (ViewBag.meds.Count == 0)
+{
+<p>There are no medications to remove at this time.</p>
+
+}

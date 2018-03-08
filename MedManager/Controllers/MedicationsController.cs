@@ -74,7 +74,7 @@ namespace MedManager.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ID,Name,Dosage,Notes,TimesXDay,RefillRate,UserID")] Medication medication)
+        public async Task<IActionResult> Add([Bind("ID,Name,Dosage,Notes,TimesXDay,RefillRate,UserID")] Medication medication)
         {
             if (ModelState.IsValid)
             {
