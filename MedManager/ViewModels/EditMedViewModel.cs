@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 using MedManager.Models;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace MedManager.ViewModels
 {
@@ -27,8 +28,13 @@ namespace MedManager.ViewModels
         public EditMedViewModel(Medication med)
         {
             Med = med;
-            /* for other var: , IEnumerable<ToD> times
-            Times = new List<SelectListItem>();
+        }
+
+        public EditMedViewModel(Medication med, IEnumerable<ToD> times)
+        {
+            Med = med;
+            
+            List<SelectListItem> Times = new List<SelectListItem>();
             foreach (ToD time in times)
             {
                 Times.Add(new SelectListItem
@@ -36,7 +42,7 @@ namespace MedManager.ViewModels
                     Value = time.ToString(),
                     Text = time.ToString()
                 });
-            } */
+            }
         }
     }
 }

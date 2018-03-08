@@ -17,16 +17,30 @@ namespace MedManager.Controllers
 
         public MedicationsController(ApplicationDbContext context)
         {
-            _context = context;
+            this._context = context;
         }
 
         // GET: Medications
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
-            return View(await _context.Medication.ToListAsync());
+            ApplicationUser userLoggedIn;
+
+            if (User.Identity.IsAuthenticated)
+            {
+                var userName = User.Identity.Name;
+                userLoggedIn = _context.Users.Single(c => c.UserName == userName);
+            } else
+            {
+                return Redirect("/");
+            }
+
+            IList<Medication> userMeds = _context.Medication.Where(c => c.UserID == userLoggedIn.Id).ToList();
+
+            return View(userMeds);
         }
 
         // GET: Medications/Details/5
+        // To view a medication
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -34,8 +48,8 @@ namespace MedManager.Controllers
                 return NotFound();
             }
 
-            var medication = await _context.Medication
-                .SingleOrDefaultAsync(m => m.ID == id);
+            Medication medication = await _context.Medication.SingleOrDefaultAsync(m => m.ID == id);
+
             if (medication == null)
             {
                 return NotFound();
@@ -44,10 +58,15 @@ namespace MedManager.Controllers
             return View(medication);
         }
 
-        // GET: Medications/Create
-        public IActionResult Create()
+        // GET: Medications/Add
+        // To add a new medication to your list
+        public IActionResult Add()
         {
-            return View();
+            IEnumerable<ToD> times = (ToD[])Enum.GetValues(typeof(ToD));
+
+            AddMedViewModel viewModel = new AddMedViewModel(times);
+
+            return View(viewModel);
         }
 
         // POST: Medications/Create
@@ -61,9 +80,38 @@ namespace MedManager.Controllers
             {
                 _context.Add(medication);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return Redirect("/Medication/Index");
             }
-            return View(medication);
+            return View(medication); // Is this going to work without passing back a viewmodel?
+        }
+
+        public IActionResult Remove()
+        {
+            string user = User.Identity.Name;
+            ApplicationUser userLoggedIn = _context.Users.Single(c => c.UserName == user);
+
+            ViewBag.meds = _context.Medication.Where(c => c.UserID == userLoggedIn.Id).ToList();
+
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult Remove(int[] medIds)
+        {
+            string user = User.Identity.Name;
+            ApplicationUser userLoggedIn = _context.Users.Single(c => c.UserName == user);
+
+            foreach(int id in medIds)
+            {
+                // find med
+                Medication med = _context.Medication.Single(c => c.ID == id);
+                // delete med
+                _context.Medication.Remove(med);
+                // save changes
+                _context.SaveChanges();
+            }
+
+            return Redirect("/Medication/Index");
         }
 
         // GET: Medications/Edit/5
@@ -74,11 +122,17 @@ namespace MedManager.Controllers
                 return NotFound();
             }
 
-            var medication = await _context.Medication.SingleOrDefaultAsync(m => m.ID == id);
+            Medication medication = await _context.Medication.SingleOrDefaultAsync(m => m.ID == id);
             if (medication == null)
             {
                 return NotFound();
             }
+            
+            // If needed: 
+            // IEnumerable<ToD> times = (ToD[])Enum.GetValues(typeof(ToD));
+            // EditMedViewModel viewModel = new EditMedViewModel(medication, times);
+            // return View(viewModel);
+
             return View(medication);
         }
 
@@ -89,6 +143,8 @@ namespace MedManager.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("ID,Name,Dosage,Notes,TimesXDay,RefillRate,UserID")] Medication medication)
         {
+            // ViewModel logic is in GitHub
+
             if (id != medication.ID)
             {
                 return NotFound();
@@ -112,7 +168,7 @@ namespace MedManager.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
+                return Redirect("/Medication/Index");
             }
             return View(medication);
         }
