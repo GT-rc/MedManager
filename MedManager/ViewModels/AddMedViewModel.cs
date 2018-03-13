@@ -32,7 +32,7 @@ namespace MedManager.ViewModels
 
         public AddMedViewModel() : base() { }
 
-        
+        /*
         public AddMedViewModel(IEnumerable<ToD> times)
         {
             List<SelectListItem> ToDay = new List<SelectListItem>();
@@ -44,6 +44,6 @@ namespace MedManager.ViewModels
                     Text = time.ToString()
                 });
             }
-        }
+        } */
     }
 }
