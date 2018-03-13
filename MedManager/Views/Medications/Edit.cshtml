@@ -1,4 +1,4 @@
-﻿@model MedManager.Models.Medication
+﻿@model MedManager.ViewModels.EditMedViewModel
 
 @{
     ViewData["Title"] = "Edit";
@@ -12,38 +12,34 @@
 <div class="row">
     <div class="col-md-4">
         <form asp-action="Edit">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="ID" />
+            <div asp-validation-summary="None" class="text-danger"></div>
+            <input type="hidden" asp-for="Med.ID" />
             <div class="form-group">
-                <label asp-for="Name" class="control-label"></label>
-                <input asp-for="Name" class="form-control" />
-                <span asp-validation-for="Name" class="text-danger"></span>
+                <label asp-for="Med.Name" class="control-label"></label>
+                <input asp-for="Med.Name" class="form-control" />
+                <span asp-validation-for="Med.Name" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Dosage" class="control-label"></label>
-                <input asp-for="Dosage" class="form-control" />
-                <span asp-validation-for="Dosage" class="text-danger"></span>
+                <label asp-for="Med.Dosage" class="control-label"></label>
+                <input asp-for="Med.Dosage" class="form-control" />
+                <span asp-validation-for="Med.Dosage" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Notes" class="control-label"></label>
-                <input asp-for="Notes" class="form-control" />
-                <span asp-validation-for="Notes" class="text-danger"></span>
+                <label asp-for="Med.Notes" class="control-label"></label>
+                <input asp-for="Med.Notes" class="form-control" />
+                <span asp-validation-for="Med.Notes" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="TimesXDay" class="control-label"></label>
-                <input asp-for="TimesXDay" class="form-control" />
-                <span asp-validation-for="TimesXDay" class="text-danger"></span>
+                <label asp-for="Med.TimesXDay" class="control-label"></label>
+                <input asp-for="Med.TimesXDay" class="form-control" />
+                <span asp-validation-for="Med.TimesXDay" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="RefillRate" class="control-label"></label>
-                <input asp-for="RefillRate" class="form-control" />
-                <span asp-validation-for="RefillRate" class="text-danger"></span>
+                <label asp-for="Med.RefillRate" class="control-label"></label>
+                <input asp-for="Med.RefillRate" class="form-control" />
+                <span asp-validation-for="Med.RefillRate" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="UserID" class="control-label"></label>
-                <input asp-for="UserID" class="form-control" />
-                <span asp-validation-for="UserID" class="text-danger"></span>
-            </div>
+            
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-default" />
             </div>
