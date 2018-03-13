@@ -57,7 +57,7 @@ namespace MedManager.Controllers
 
             return View(medication);
         }
-
+        
         // GET: Medications/Add
         // To add a new medication to your list
         public IActionResult Add()
@@ -69,6 +69,37 @@ namespace MedManager.Controllers
             return View(viewModel);
         }
 
+        [HttpPost]
+        public IActionResult Add(AddMedViewModel addMedViewModel)
+        {
+            string user = User.Identity.Name;
+            ApplicationUser userLoggedIn = _context.Users.Single(c => c.UserName == user);
+
+            if (ModelState.IsValid)
+            {
+                Medication newMed = new Medication
+                {
+                    Name = addMedViewModel.Name,
+                    Dosage = addMedViewModel.Dosage,
+                    TimesXDay = addMedViewModel.TimesXDay,
+                    Notes = addMedViewModel.Notes,
+                    RefillRate = addMedViewModel.RefillRate,
+                    UserID = userLoggedIn.Id
+                };
+
+                // add to db and user list
+                _context.Medication.Add(newMed);
+                userLoggedIn.AllMeds.Add(newMed);
+                // save changes
+                _context.SaveChanges();
+
+                return Redirect("/Medication/Index");
+            }
+
+            return View(addMedViewModel);
+        }
+
+        /*
         // POST: Medications/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
@@ -83,7 +114,7 @@ namespace MedManager.Controllers
                 return Redirect("/Medication/Index");
             }
             return View(medication); // Is this going to work without passing back a viewmodel?
-        }
+        } */
 
         public IActionResult Remove()
         {
@@ -114,97 +145,130 @@ namespace MedManager.Controllers
             return Redirect("/Medication/Index");
         }
 
-        // GET: Medications/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public IActionResult Edit(int id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            Medication med = _context.Medication.Single(c => c.ID == id);
 
-            Medication medication = await _context.Medication.SingleOrDefaultAsync(m => m.ID == id);
-            if (medication == null)
-            {
-                return NotFound();
-            }
-            
-            // If needed: 
             // IEnumerable<ToD> times = (ToD[])Enum.GetValues(typeof(ToD));
-            // EditMedViewModel viewModel = new EditMedViewModel(medication, times);
-            // return View(viewModel);
 
-            return View(medication);
+            EditMedViewModel editMedViewModel = new EditMedViewModel(med);
+            return View(editMedViewModel);
         }
 
-        // POST: Medications/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ID,Name,Dosage,Notes,TimesXDay,RefillRate,UserID")] Medication medication)
+        public IActionResult EditPost(int id, EditMedViewModel editMedViewModel)
         {
-            // ViewModel logic is in GitHub
+            string user = User.Identity.Name;
+            ApplicationUser userLoggedIn = _context.Users.Single(c => c.UserName == user);
 
-            if (id != medication.ID)
-            {
-                return NotFound();
-            }
+            Medication editedMed = _context.Medication.Single(c => c.ID == id);
 
-            if (ModelState.IsValid)
-            {
-                try
+            editedMed.Name = editMedViewModel.Med.Name;
+            editedMed.Dosage = editMedViewModel.Med.Dosage;
+            editedMed.Notes = editMedViewModel.Med.Notes;
+            editedMed.TimesXDay = editMedViewModel.Med.TimesXDay;
+            editedMed.RefillRate = editMedViewModel.Med.RefillRate;
+            editedMed.UserID = userLoggedIn.Id;
+
+            // update change and save to db
+            _context.Medication.Update(editedMed);
+            _context.SaveChanges();
+
+            return Redirect("/Medication/Index");
+        }
+
+        /*
+                // GET: Medications/Edit/5
+                public async Task<IActionResult> Edit(int? id)
                 {
-                    _context.Update(medication);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!MedicationExists(medication.ID))
+                    if (id == null)
                     {
                         return NotFound();
                     }
-                    else
+
+                    Medication medication = await _context.Medication.SingleOrDefaultAsync(m => m.ID == id);
+                    if (medication == null)
                     {
-                        throw;
+                        return NotFound();
                     }
+
+                    // If needed: 
+                    // IEnumerable<ToD> times = (ToD[])Enum.GetValues(typeof(ToD));
+                    // EditMedViewModel viewModel = new EditMedViewModel(medication, times);
+                    // return View(viewModel);
+
+                    return View(medication);
                 }
-                return Redirect("/Medication/Index");
-            }
-            return View(medication);
-        }
 
-        // GET: Medications/Delete/5
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
+                // POST: Medications/Edit/5
+                // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+                // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+                [HttpPost]
+                [ValidateAntiForgeryToken]
+                public async Task<IActionResult> Edit(int id, [Bind("ID,Name,Dosage,Notes,TimesXDay,RefillRate,UserID")] Medication medication)
+                {
+                    // ViewModel logic is in GitHub
 
-            var medication = await _context.Medication
-                .SingleOrDefaultAsync(m => m.ID == id);
-            if (medication == null)
-            {
-                return NotFound();
-            }
+                    if (id != medication.ID)
+                    {
+                        return NotFound();
+                    }
 
-            return View(medication);
-        }
+                    if (ModelState.IsValid)
+                    {
+                        try
+                        {
+                            _context.Update(medication);
+                            await _context.SaveChangesAsync();
+                        }
+                        catch (DbUpdateConcurrencyException)
+                        {
+                            if (!MedicationExists(medication.ID))
+                            {
+                                return NotFound();
+                            }
+                            else
+                            {
+                                throw;
+                            }
+                        }
+                        return Redirect("/Medication/Index");
+                    }
+                    return View(medication);
+                } 
 
-        // POST: Medications/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            var medication = await _context.Medication.SingleOrDefaultAsync(m => m.ID == id);
-            _context.Medication.Remove(medication);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-        }
+                // GET: Medications/Delete/5
+                public async Task<IActionResult> Delete(int? id)
+                {
+                    if (id == null)
+                    {
+                        return NotFound();
+                    }
 
-        private bool MedicationExists(int id)
-        {
-            return _context.Medication.Any(e => e.ID == id);
-        }
-    }
-}
+                    var medication = await _context.Medication
+                        .SingleOrDefaultAsync(m => m.ID == id);
+                    if (medication == null)
+                    {
+                        return NotFound();
+                    }
+
+                    return View(medication);
+                }
+
+                // POST: Medications/Delete/5
+                [HttpPost, ActionName("Delete")]
+                [ValidateAntiForgeryToken]
+                public async Task<IActionResult> DeleteConfirmed(int id)
+                {
+                    var medication = await _context.Medication.SingleOrDefaultAsync(m => m.ID == id);
+                    _context.Medication.Remove(medication);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
+                }
+
+                private bool MedicationExists(int id)
+                {
+                    return _context.Medication.Any(e => e.ID == id);
+                } */
+    } 
+} 
