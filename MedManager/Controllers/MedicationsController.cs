@@ -31,7 +31,7 @@ namespace MedManager.Controllers
                 userLoggedIn = _context.Users.Single(c => c.UserName == userName);
             } else
             {
-                return Redirect("/");
+                return Redirect("/Home/Index");
             }
 
             IList<Medication> userMeds = _context.Medication.Where(c => c.UserID == userLoggedIn.Id).ToList();
@@ -62,9 +62,9 @@ namespace MedManager.Controllers
         // To add a new medication to your list
         public IActionResult Add()
         {
-            IEnumerable<ToD> times = (ToD[])Enum.GetValues(typeof(ToD));
+            // IEnumerable<ToD> times = (ToD[])Enum.GetValues(typeof(ToD));
 
-            AddMedViewModel viewModel = new AddMedViewModel(times);
+            AddMedViewModel viewModel = new AddMedViewModel();
 
             return View(viewModel);
         }
@@ -93,7 +93,7 @@ namespace MedManager.Controllers
                 // save changes
                 _context.SaveChanges();
 
-                return Redirect("/Medication/Index");
+                return Redirect("/Medications/Index");
             }
 
             return View(addMedViewModel);
@@ -142,7 +142,7 @@ namespace MedManager.Controllers
                 _context.SaveChanges();
             }
 
-            return Redirect("/Medication/Index");
+            return Redirect("/Medications/Index");
         }
 
         public IActionResult Edit(int id)
@@ -156,12 +156,12 @@ namespace MedManager.Controllers
         }
 
         [HttpPost]
-        public IActionResult EditPost(int id, EditMedViewModel editMedViewModel)
+        public IActionResult EditPost(EditMedViewModel editMedViewModel)
         {
             string user = User.Identity.Name;
             ApplicationUser userLoggedIn = _context.Users.Single(c => c.UserName == user);
 
-            Medication editedMed = _context.Medication.Single(c => c.ID == id);
+            Medication editedMed = _context.Medication.Single(c => c.ID == editMedViewModel.Med.ID);
 
             editedMed.Name = editMedViewModel.Med.Name;
             editedMed.Dosage = editMedViewModel.Med.Dosage;
@@ -174,7 +174,7 @@ namespace MedManager.Controllers
             _context.Medication.Update(editedMed);
             _context.SaveChanges();
 
-            return Redirect("/Medication/Index");
+            return Redirect("/Medications/Index");
         }
 
         /*
