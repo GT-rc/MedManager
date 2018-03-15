@@ -1,0 +1,56 @@
+﻿@model IList<Medication>
+
+@{
+    ViewData["Title"] = "View All Meds";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>View All Medications</h2>
+
+
+@foreach (var item in Model)
+{
+
+    <div>
+        <hr />
+        <dl class="dl-horizontal">
+            <dt>
+                @Html.DisplayNameFor(modelItem => item.Name)
+            </dt>
+            <dd>
+                @Html.DisplayFor(modelItem => item.Name)
+            </dd>
+            <dt>
+                @Html.DisplayNameFor(modelItem => item.Dosage)
+            </dt>
+            <dd>
+                @Html.DisplayFor(modelItem => item.Dosage)
+            </dd>
+            <dt>
+                @Html.DisplayNameFor(modelItem => item.Notes)
+            </dt>
+            <dd>
+                @Html.DisplayFor(modelItem => item.Notes)
+            </dd>
+            <dt>
+                @Html.DisplayNameFor(modelItem => item.TimesXDay)
+            </dt>
+            <dd>
+                @Html.DisplayFor(modelItem => item.TimesXDay)
+            </dd>
+            <dt>
+                @Html.DisplayNameFor(modelItem => item.RefillRate)
+            </dt>
+            <dd>
+                @Html.DisplayFor(modelItem => item.RefillRate)
+            </dd>
+        </dl>
+    </div>
+
+
+}
+
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>

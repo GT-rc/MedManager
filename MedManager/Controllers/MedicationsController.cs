@@ -57,6 +57,16 @@ namespace MedManager.Controllers
 
             return View(medication);
         }
+
+        public IActionResult ViewAll()
+        {
+            string userName = User.Identity.Name;
+            ApplicationUser userLoggedIn = _context.Users.Single(c => c.UserName == userName);
+
+            IList<Medication> userMeds = _context.Medication.Where(c => c.UserID == userLoggedIn.Id).ToList();
+
+            return View(userMeds);
+        }
         
         // GET: Medications/Add
         // To add a new medication to your list
