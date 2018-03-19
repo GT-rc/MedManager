@@ -1,6 +1,13 @@
 ﻿body {
     padding-top: 50px;
     padding-bottom: 20px;
+    background-color: aliceblue;
+}
+
+#center {
+    margin: auto;
+    width: 50%;
+    padding: 10px;
 }
 
 /* Wrapping element */
